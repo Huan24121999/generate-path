@@ -1,0 +1,211 @@
+1. Compute the program graph
+2. Tinh do phuc tap theo chu ky, trong do thi, C(G)= m-n + q. Trong do, m la so canh, n so nodes, q so strongly connected 
+componets. Moi ctrinh se co diem bd: single entry va exit point ( diem ket thuc)=> q=1. Trong path testing, do phuc tap
+theo chu ky nen duoc gioi han tren cho so luong basis path.
+3. Chon 1 basis set of paths
+4. Sinh test case cho moi paths
+Independent path: la 1 path cua ctrinh, noi it nhat 1 canh cua path nay khong xuat hien trong bat ky 1 path nao khac trong 
+control flow grapth (CFG)
+Basis set of paths and basis path: 1 basis set of paths is a set of paths, moi path trong set nay phai thoa man 3 dk sau:
+	+ Moi path phai la 1 independent path
+	+ Moi canh trong CFG nen duoc bao phu boi tat ca cac paths trong basis set
+	+ Moi path khong co trong basis path co the duco xay dung tu cac phep toan tuyen tinh giua cac paths trong tap nay
+
+GA: 
+1. khoi tao P(n)
+2. uoc tinh, danh gia ( evaluate ) P(n)
+3. while (dk ket thuc khong thoa man ) 
+	select P(n+1) from P(n)
+	recombine( ket hop) P(n+1)
+	evaluate P(n+1)
+	n = n+1
+   end while
+selection step : dung de tim cap cac ung vien ma se duoc combine ( ket hop) bang 1 so cach de xay dung ra next generation
+crossover step: lien quan den 2 chromosomes, trao doi chung
+
+CFG: CONTROL FLOW GRAPH: G(N,E) voi 2 node phan biet, 1 diem bat dau n0 va ket thuc nk. N la tap nodes, moi node duoc dai 
+dien cho 1 statement, va E la tap directed adges, moi directed edge e=(n,m) 
+INTER- PROCEDUARAL CALL GRAPH: la 1 directed graph. 1 edge(p1, p2 ton tai neu procedure p1 co the call procedure p2 tu 1
+vai call site trong p1.
+CLASS CALL GRAPTH: la 1 directed procedure call giua cac methods
+DD-GRAPH: (DDG) la 1 directed grap G=(N,E), trong do N la tap cac nodes, va E la tap cac edges, voi 2 edges phan biet
+e0, ek ( co canh vao duy nhat va canh ra duy nhat etry edge, exit edge) nhu la bat ky edge nao khac trong E duoc dat toi
+boi e0 va reach ek, va such that cho moi node n thuoc N, n# tail(e0), n#head(ek), (indegree(n)+ outdegree(n))>2 trong khi
+indegree(tail(e0))=0 va out degree(tail(e0)=1, indegree((head(ek))=1 va outdegree(head(ek))=0
+EDGE e in DD-GRAPH DDG la 1 ordered pair cac adjacent nodes( cac node lien ke) duoc goi la tail va head cua e, 
+e= (tail(e)), head(e))
+PATH p cua length l trong 1 dd-graph DDG la 1 tap sequence p=e0, e1, e2, ... el noi tail(e(i+1))= head(ei)
+
+THE SEARCH SPACE OF ALGORITHM:
+Khong gian tim kiem la tap tat ca cac giai phap ma trong do co giai phap mong muon.
+Moi diem trong khong gian tim kien daij dien cho 1 giai phap kha thi. GS rang DDG la 1 DD-GRAPH cua ctrinh da tested. 
+Khong gian tim kiem cua thuat toan la D:
+	D= { moi e, sao cho e thuoc DDG va e is reached by entry va reaches exit } 
+	Noi de hieu: Input domain cua thuat toan la tap tat ca cac edges trong dd-graph cua ctrinh dang duoc ktra.Vi du,
+khong gian tim kiem cua ctrinh mau laf tap D ={e0,e1,e2,e3,e4,e5,e6,e7,e8,e9}
+
+ENCODING: ma hoa. Ma hoa la 1 qtrinh bieu dien cac gen rieng le. Qua trinh (process) co the trien khai sd bits, number,
+tree, arrays, lists hoac bat ky object nao khac. Ma hoa phu thuoc chinh vao giai quyet van de. Vi du, one co the ma hoa
+truc tiep thanh real or integer number. Noi cach khac, can phai ptr THUAT TOAN DI TRUYEN MOI
+ GA duoc de xuat, su dung 1 vector gom cac so integer nhu 1 chromosome de dai dien cho cac canh trong dd-graph của ctrinh 
+dang test. Chieu dai cua vector phu thuoc vao chieu dai cua required basis path. Moi canh trong dd-graph duoc dai dien boi
+index cua no trong chromosome.Ben canh do, moi cell ( value ) trong vector (chromosome) duoc anh xa vao canh tuong ung cua
+no bang cach sd: M: i thuoc chromosome -> ei thuoc dd-graph
+VD: 1 chromosome p={e0,e1,e3,e5} => (0,1,3,5)
+
+INITIAL POPULATION: KHOI TAO BAN DAU
+moi chromosome dai dien boi 1 vector cac so nguyen. moi chromosome tuong ung vs 1 completed path trong graph. cac so integer tuong ung la chi so index cua cac canh trong completed path. 
+Chromosome vi (i =1 ...PS)
+
+moi phan tu trong INITIAL POPULATION bao gom 2 edges la entry va exit ( bat dau va ket thuc) cua dd-graph cua ctrinh dag test. min length cua chromosome la 2 va max length tuong ung voi so luong edges trong dd-graph
+
+PS= populaton size. Gia tri phu hop cua PS duoc xac dinh thong qua thuc nghiem.
+
+EVALUATION FUNCTION: ham danh gia
+
+fitness function phu thuoc vao xac suat cua cac canh lien ke ( adjacent edges ) trong path. Thuat toan su dung fitness 
+function de evaluate moi path duoc tao ra.
+
+FITNESS VALUE: ft(vi)= tong cua w(ej) voi j = 1...d(vi)  vi la chromosome
+
+d(vi) la so canh lien ke trong vi,
+w(ej) la weigh ( probability)- xac suat cua canh ej trong chromosome vi,
+w(ej)= 1/(L(vi)) trong do L(vi) la do dai cua chromosome vi ( tong so canh trong chromosome vi)
+=> Fitness function co the duoc viet nhu so luong cac canh lien ke trong chromosome chia cho tong so canh trong cung chromosome
+f(v1)= d(v1)/L(v1)
+
+SELECTION
+
+- sau khi tinh toan fitness cua moi test path trong current population, thuat toan se chonj cac test paths tu tat ca cac test path co trong current population ma se co kha nang la parent cua the he tiep theo ( next population)
+=> Chon bang cach su dung roulette wheel method. ( quay banh xe roulette lan PS). Moi lan chung ta chon loc 1 nhiem sac the don cho 1 quan the moi.
+
+REPRODUCTION- Sinh san, TAI TAO
+
+- chung ta su dung 3 operators( toan tu):
+ 	crossover : CHÉO
+	mutation  : ĐỘT BIẾN	
+	breeding  : LAI TẠO ( su dung thuạt toan de xuat )
+
+CROSSOVER: ( CHÉO ): GA duoc de xuat su dung crossover chinh thong de thay doi thong tin tai 1 vi tri random trong 2 chromosomes duoc chon de tao ra 2 chromosomes moi. Xac suat cua crossover PX mang den chung ta so luong mong doi cua chromosomes.
+ 	Moi cap chromosomes chung ta tao 1 so integer random pos tu [2 ...L-1] (L la so luong edges trong 1 chromosome) . pos chi ra vi tri cua crossing point. 
+=> 2 chromosomes (b1 ... b_pos, b_pos+1, ... bn)
+		 (c1 ... c_pos, c_pos+1, ... cn)
+duoc thay bang 1 cap:
+		 (b1 ... b_pos, c_pos+1, ... cn)
+		 (c1 ... c_pos, b_pos+1, ... bn)
+
+MUTATION: ĐỘT BIẾN
+GA duoc de xuat trien khai ap dung cho moi chromosome trong curent population va moi cell trong chromosome:
+   	1. Tao 1 so random : r trong khoang [0 ... 1]
+	2. Neu r < MP thi dot bien cell bang cach thay the edge bang edge khac trong cac edge ho hang cua no ( edges có cùng parent được gọi là edge siblings )
+
+
+BREADING: LAI TAO
+cai nay duoc phat trien: Them cac gen moi hoac edges vao trong chromosomes cho toi khi chung chung compose cac complete paths.
+Toan tu nay duoc ap dung trong tat ca cac lan lap cua thuat toan GA duoc de xuat.
+=> XEM ĐÂY:
+ Voi moi chromosome trong current population:
+	1. Tao 1 so integer random : pos trong khoang [2 ... L-1], L la do dai cua chromosome. pos chi ra vi trí của breeding point.
+	2. Xac dinh edge tai vi tri pos va chon mot cach ngau nhien 1 edge trong so cac edge ke nhiem cua edge do.
+	3. Them edge ke nhiem tai vtri pos+1 va tang chieu dai cua chromosome them 1.
+
+
+
+EX: v1= (0,1,3,4,9) la 1 chromosome va pos=4. tại pos =4 ta có edge =4, edge kế nhiem cua e4 la e6 va e7. chon ngau nhien 1 trong 2 ta duco e6. va insert e6 vao vtri 5. Khi do ta có n1 chromosome moi la v1'=(0,1,3,4,6,9). Chromosome nay sẽ được mở rộng trong nhiều lần tiếp theo của thuật toán thông qua breeding operator để đạt được 1 chromosome vd như (0,1,3,4,6,8,5,9) tương ứng với path ....
+
+
+ELITIST
+
+Elitist function cải tiến current population bằng cách lưu lại 1 bản copy của thành phần tốt nhất trong population trước đó. 
+Neu thanh phan tot nhat cua population hien tai la kem hon thanh phan tot nhat cua population truoc do thi thay doi chung va thanh phan tot nhat cua population hien tai se thay the thanh phan kem nhat cua population hien tai. Sau do, no se luu lai thanh phan tot nhat cua population hien tai.
+
+STOP CONDITION: DIEU KEIN DUNG
+
+Trong GA truyen thong, population co the tien hoa cho toi khi 1 thanh phan tu toan bo tap hop dai dien cho giai phap duoc tim thay. Trong TH cua chung toi, dk nay se tuong ung voi viec tim kiem nhom duong dan dat duoc dieu kien cua basis test path .
+Dung khi 1 tap cac phan tu thoa man dk yeu cau trong  section 3.
+Solution cua bai toan la tap cac phan tu do.
+
+	Thuat toan se dung va viec tim kiem se ket thuc trong 2 TH:
+	1. kHI cac test path duoc tao ra thoa man dk cua basis set of paths.
+	2. Khi so generations dat toi nguong maximum.
+
+TONG QUAN VE THUAT TOAN:
+
+-	GA duoc de xuat chap nhan dau vao cho ctrinh duoc test. CFG CONTROL FLOW GRAPH va DDG dd-graph cua ctrinh.
+-	e0- canh bat dau, ek canh ket thuc cua DDG
+-	Si la tap cac successors: nguoi ke nhiem cua moi edge ei.
+-	No chap nhan bien GA nhu la population size: PS
+-	MG: maximum cua generations
+-	PX: probabilities cua crossover: Sac xuat cua cheo
+-	PM: Probabilities cua mutaion : SX cua dot bien
+
+=> Thuat toan tao ra 1 basis test path tai 1 thoi diem va lap lai cho toi khi cac paths yeu cau duoc dat duoc hoac maximum cua generations bi vuot qua ( exceeded) 
+
+MOT CONG CU TAO BASIS TEST PATHS.
+
+chung ta xd 1 tool dua tren ky thuat da de xuat o tren. Tool nay bao gom 4 modules chinh:
+	1.	Analysis Module
+	2.	Path Genneration Module
+	3.	Feasibility Checking Module: ktra tinh kha thi
+	4.	Independency Checking Module: ktra tinh doc lap
+
+ANALYSIS MODULE:
+-	Doc ctrinh can test
+-	Phan loai cac statements ( cau lenh)  cua ctrinh va reformat chung de de dang xay dung CFG: CONTROL FLOW GRAPH
+-	Xay dung CFG cua ctrinh dua tren buoc 2
+-	Xay dung dd-graph bang cach giam CFG su dung thuat toan REDUCE. 
+-	Tim tap cac successors cho moi edge trong DDG
+-	Chuyen CFG, DDG va table successors vao PATH GENERATION MODULE.
+
+PATH GENNERATION MODULE:
+- su dung thuat toan GA da de xuat o tren de tao ra set of basis test paths. 
+- Co che: Bat dau khoi tao tat ca cac paths dua tren entry edge va exit edge cua DDG. Sau do, no se tang moi path bang cach them edge moi cho toi khi dat duoc 1 complete path. 
+VD: {e0,e9} la su khoi tao cua bat ky path nao, sau do thuat toan se them nhung edge moi theo 3 toan tu da noi o tren la CHEO, LAI TAO VA DOT BIEN cho den khi dat duoc 1 complete path VD nhu {e0,e2,e4,e6,e9}
+
+Trong TH vong lap, thuat toan se lap lai vong lap cho den khi bao phu tat ca cac canh trong vong lap sao cho no chon cac canh chua duoc bao phu.
+=> Chuyen den FEASIBILITY CHECKING MODULE. de kiem tra tinh kha thi cua path da duoc tao.
+
+FEASIBILITY CHECKING MODULE.
+
+-	Ktra ....
+
+INDEPENDENCY CHECKING MODULE
+
+- Neu path duoc tao ra la 1 path doc lap, thuat toan se add path nay vao trong basis set of paths.
+- Neu khong, se bo qua path nay va bat dau 1 vong lap moi de tim 1 complete path khac. 
+==> Thuat toan se lap lai cho toi khi tao ra duoc 1 set of basis test paths hoac thoa man dk dung.
+
+CASE STUDY:
+
+G/S: PS: Population Size= 4
+
+1. INITITAL POPULATION:
+Initial population co 4 ca the( thanh vien), moi ca the chi chua entry edge va exit edge. 
+
+VD: v1 =(0,9); v2=(0,9); v3=(0,9); v4= (0,9)
+
+2. DANH GIA CURRENT POPULATION:
+G/S rang population hien tai co 4 chromosomes: 
+c1=(0,1,3,5,9) => 5/5
+c2=(0,2,3,4,9) => 4/5
+c3=(0,2,3,5,9) => 5/5
+c4=(0,1,3,4,9) => 4/5
+=> Tim fitness value cua moi chromosome, chung ta convert moi chromosome vao cac path tuong ung. Sau do, su dung EQ de tim fitness value cho moi chromosome. 
+EX:
+L=5 do co 5 edges.
+
+SELECTION: CHON LUA
+
+Sd roulette wheel method de chon parent cho population tiep theo. Total fitness F=ft(C1)+ ft(C2)+ ft(C3) + ft(C4)= 3.2
+
+CROSSOVER:
+G/S that probability cua cross
+
+- new fitness function to evaluate the generated test path: depend on vao so luong cac canh lien ke cua do thi 
+- Thuat toan tim kiem cac test paths thoa man 3 dieu kien ve BASIS SET OF PATH:
+. Every path should be an independent path.
+• All edges in a CFG should be covered by all paths in
+the basis set.
+• Every path not contained in this basis set of paths can
+be constructed by linear operations among paths in
+this set.
